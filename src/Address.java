@@ -1,0 +1,86 @@
+import java.util.Objects;
+
+public class Address {
+	
+	String street;
+	String city;
+	USState usState; 
+	String zipCode;
+	
+	public Address(String street, String city, USState usState, String zipCode) {
+		
+		this.street = street;
+		this.city = city;
+		this.usState = usState;
+		this.zipCode = zipCode;
+	}
+
+//should there be getters and setters and overloaded constructors?
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public USState getUsState() {
+		return usState;
+	}
+
+	public void setUsState(USState usState) {
+		this.usState = usState;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	@Override
+	public String toString() {
+		
+		StringBuilder address = new StringBuilder("\nAddress: ");
+		
+		address.append("\n" + this.street + "\n" + this.city + ", " + this.usState + " " + this.zipCode);
+		
+		return address.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true; 
+		}
+		
+		if (obj == null) {
+			return false;
+		}
+		
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		Address other = (Address) obj;
+		
+		return Objects.equals(street, other.street) && Objects.equals(zipCode, other.zipCode);
+	}
+	
+	
+	
+	
+	
+	
+
+}
