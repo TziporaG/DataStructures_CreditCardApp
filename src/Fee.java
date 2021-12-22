@@ -1,6 +1,6 @@
 
 
-public class Fee {
+public class Fee extends Transaction {
 	private FeeType feeType;
 	
 	public Fee(FeeType feeType) {

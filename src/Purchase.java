@@ -1,5 +1,5 @@
 
-public class Purchase //extends transaction
+public class Purchase extends Transaction
 {
 	PurchaseType purchaseType;
 	
