@@ -1,3 +1,4 @@
+package creditCardFiles;
 
 public class DuplicateTransactionException extends RuntimeException {
 

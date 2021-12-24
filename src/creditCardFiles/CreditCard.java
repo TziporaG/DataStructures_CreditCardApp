@@ -1,3 +1,4 @@
+package creditCardFiles;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -197,4 +198,43 @@ public class CreditCard {
 
 		return null;
 	}
+
+	public CreditCardStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(CreditCardStatus status) {
+		this.status = status;
+	}
+
+	public String getCreditCardID() {
+		return creditCardID;
+	}
+
+	public LocalDate getIssueDate() {
+		return issueDate;
+	}
+
+	public LocalDate getExpirationDate() {
+		return expirationDate;
+	}
+
+	public String getIssueCompany() {
+		return issueCompany;
+	}
+
+	public CreditCardType getCreditCardType() {
+		return creditCardType;
+	}
+
+	public double getCreditCardLimit() {
+		return creditCardLimit;
+	}
+
+	public Stack<Transaction> getTransactions() {
+		return transactions;
+	}
+
+	
+	
 }

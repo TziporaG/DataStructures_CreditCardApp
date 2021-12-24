@@ -1,3 +1,4 @@
+package creditCardFiles;
 import java.util.Objects;
 
 public class Address {
@@ -15,7 +16,14 @@ public class Address {
 		this.zipCode = zipCode;
 	}
 
-//should there be getters and setters and overloaded constructors?
+	public Address(Address address) {
+		
+		this.street = address.getStreet();
+		this.city = address.getCity();
+		this.usState = address.getUsState();
+		this.zipCode = address.getZipCode();
+	}
+	
 	public String getStreet() {
 		return street;
 	}

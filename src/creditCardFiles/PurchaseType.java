@@ -1,3 +1,4 @@
+package creditCardFiles;
 
 public enum PurchaseType {
 //added MISC...

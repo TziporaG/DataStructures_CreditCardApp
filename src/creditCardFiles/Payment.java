@@ -1,9 +1,13 @@
+package creditCardFiles;
 
 public class Payment extends Transaction {
+	
 	private PaymentType paymentType;
 	private BankAccount account;
 
-	public Payment(PaymentType type, BankAccount account) {
+	public Payment(PaymentType type, BankAccount account, double amount) {
+		
+		super(TransactionType.Payment, amount);
 		this.paymentType = type;
 		this.account = account;
 	}
@@ -12,15 +16,13 @@ public class Payment extends Transaction {
 		return paymentType;
 	}
 
-	public void setPaymentType(PaymentType paymentType) {
-		this.paymentType = paymentType;
-	}
-
 	public BankAccount getAccount() {
 		return account;
 	}
 
-	public void setAccount(BankAccount account) {
-		this.account = account;
+	@Override
+	public String toString() {
+		
+		return super.toString() + "\nPayment type: " + paymentType;
 	}
 }
