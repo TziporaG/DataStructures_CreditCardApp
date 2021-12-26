@@ -1,15 +1,18 @@
 package creditCardFiles;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
-public class CreditCards {
+public class CreditCards implements Iterable<CreditCard>{
 
 	// using linked list so most efficient to remove from middle
 	private LinkedList<CreditCard> cards;
+	private int modCount;
 
 	public CreditCards() {
 
 		cards = new LinkedList<CreditCard>();
+		modCount = 0;
 	}
 
 	public void activeCards() {
@@ -28,7 +31,7 @@ public class CreditCards {
 		
 		for (CreditCard card : cards) {
 
-				System.out.println(card.toString());
+				totalBalance += card.getCurrentBalance();
 			
 		}
 
@@ -48,6 +51,7 @@ public class CreditCards {
 		
 		if(!cards.contains(newCard)) {
 			cards.addFirst(newCard);
+			modCount++;
 		}
 		throw new CreditCardException("Credit Card already exists.");
 	}
@@ -56,6 +60,7 @@ public class CreditCards {
 
 		CreditCard c = this.findCard(ccNum);
 		cards.remove(c);
+		modCount++;
 
 	}
 
@@ -94,6 +99,11 @@ public class CreditCards {
 			
 			card.addFee(fee);
 		}
+	}
+
+	@Override
+	public Iterator<CreditCard> iterator() {
+		return cards.iterator();
 	}
 
 }
