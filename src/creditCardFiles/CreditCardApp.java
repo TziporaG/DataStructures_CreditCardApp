@@ -1,6 +1,8 @@
 package creditCardFiles;
 
 import java.util.Scanner;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 public class CreditCardApp {
 	
@@ -90,18 +92,73 @@ public class CreditCardApp {
 	}
 	
 	public void addCreditCard() {
+		System.out.print("Who is issuing you this new card? ");
+		//clear buffer
+		input.nextLine();
+		String issueCompany = input.nextLine();
+		while(issueCompany == null) {
+			System.out.println("Invalid.");
+			System.out.print("Who is issuing you this new card? ");
+			issueCompany = input.nextLine();
+		}
+		
+		System.out.print("Type of Credit Card? ");
+		CreditCardType type = CreditCardType.valueOf(input.nextLine());
+		
+		System.out.print("Status of Credit Card? ");
+		CreditCardStatus status = CreditCardStatus.valueOf(input.nextLine());
+		
+		CreditCard newCard = new CreditCard(issueCompany, type, status);
+		cards.addCard(newCard);
 		
 	}
 	
 	public void removeCreditCard() {
 		
+		System.out.print("Please enter the Credit Card Number you wish to remove: ");
+		input.nextLine();
+		String ccNum = input.nextLine();
+		while(ccNum.length() < 15 || ccNum.length() > 16) {
+			System.out.println("Invalid Credit Card length.");
+			System.out.print("Please enter the Credit Card Number you wish to remove: ");
+			ccNum = input.nextLine();
+		}
+		cards.removeCard(ccNum);
+		
 	}
 	
 	public void displayOutstandingBalances() {
+		double totalBalance = 0;
+		System.out.println("Outstanding Balances on the Following Credit Cards:");
+		
+		for(CreditCard card:cards) {
+			if(card.getCurrentBalance() > 0) {
+				System.out.println("Credit Card Number: " + card.getCreditCardID() + "\nOutstanding Balance: " + card.getCurrentBalance());
+				totalBalance += card.getCurrentBalance();
+			}
+		}
+		
+		System.out.println();
+		
+		if(totalBalance > 0) {
+			System.out.println("Total Outstanding Balances: " + totalBalance);			
+		}
+		else {
+			System.out.println("You have no outstanding balances.");
+		}
 		
 	}
 	
 	public void displayTotalAvailCredit() {
+		int totalAvailCredit = 0;
+		
+		for(CreditCard card:cards) {
+			if(card.getAvailCredit() > 0) {
+				totalAvailCredit += card.getAvailCredit();
+			}
+		}
+		
+		System.out.println("Total Available Credit: " + totalAvailCredit);
 		
 	}
 	
