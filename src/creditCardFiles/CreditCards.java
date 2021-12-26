@@ -46,27 +46,29 @@ public class CreditCards {
 
 	public void addCard(CreditCard newCard) {
 		
-		if(!cards.contains(newCard)) {
+		if(!this.findCard(newCard)) {
 			cards.addFirst(newCard);
 		}
+		throw new CreditCardException("Credit Card already exists.");
 	}
 
 	public void removeCard(CreditCard card) {
 
-		if(cards.contains(card)) {
+		if(this.findCard(card)) {
 			cards.remove(card);
 		}
+		throw new CreditCardException("Credit Card does not exist.");
 
 	}
 
-	public CreditCard findCard(CreditCard card) {
+	public boolean findCard(CreditCard card) {
 
 		for(CreditCard c:cards) {
 			if(card.equals(c)) {
-				return c;
+				return true;
 			}
 		}
-		throw new CreditCardException("Credit Card not found.");
+		return false;
 
 	}
 

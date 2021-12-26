@@ -7,7 +7,7 @@ public class Fee extends Transaction {
 	
 	public Fee (FeeType feeType, double amount) {
 		
-		super(TransactionType.Fee, amount);
+		super(TransactionType.FEE, amount);
 		this.feeType = feeType;
 	}
 

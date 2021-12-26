@@ -48,11 +48,6 @@ public class Transaction {
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(transactionID);
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		
 		if (this == obj) {

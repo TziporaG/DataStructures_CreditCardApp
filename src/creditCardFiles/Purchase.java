@@ -6,7 +6,7 @@ public class Purchase extends Transaction
 	
 	public Purchase(PurchaseType purchaseType, double amount) {
 		
-		super(TransactionType.Purchase, amount);
+		super(TransactionType.PURCHASE, amount);
 		this.purchaseType = purchaseType;
 	}
 

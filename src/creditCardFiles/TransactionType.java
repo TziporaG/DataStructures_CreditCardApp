@@ -2,5 +2,5 @@ package creditCardFiles;
 
 
 public enum TransactionType {
-	Purchase, Payment, Fee
+	PURCHASE, PAYMENT, FEE
 }

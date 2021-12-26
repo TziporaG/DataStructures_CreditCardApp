@@ -12,12 +12,10 @@ public class Vendor {
 		this.address = address;
 	}
 	
-	/**should there be an empty vendor?
-	public Vendor() {
-		
-		this.name = "MISC";
+	public Vendor(String name) {
+		this.name = name;
 		this.address = null;
-	}*/
+	}
 
 	public String getName() {
 		return name;
@@ -38,6 +36,9 @@ public class Vendor {
 	//what should the toString print?
 	@Override
 	public String toString() {
+		if(address == null) {
+			return "Vendor Name: " + name;
+		}
 		return "Vendor Name: " + name + address.toString();
 	}
 	

@@ -7,7 +7,7 @@ public class Payment extends Transaction {
 
 	public Payment(PaymentType type, BankAccount account, double amount) {
 		
-		super(TransactionType.Payment, amount);
+		super(TransactionType.PAYMENT, amount);
 		this.paymentType = type;
 		this.account = account;
 	}
