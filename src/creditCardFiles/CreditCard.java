@@ -3,6 +3,7 @@ package creditCardFiles;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Stack;
@@ -56,6 +57,7 @@ public class CreditCard {
 		this.transactions = new Stack<Transaction>();
 
 	}
+	
 
 	public void addPurchase(Purchase purchase) {
 
@@ -235,6 +237,17 @@ public class CreditCard {
 		return transactions;
 	}
 
-	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CreditCard other = (CreditCard) obj;
+		return Objects.equals(creditCardID, other.creditCardID);
+	}
+
 	
 }

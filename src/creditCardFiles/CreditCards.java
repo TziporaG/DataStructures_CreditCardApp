@@ -46,55 +46,53 @@ public class CreditCards {
 
 	public void addCard(CreditCard newCard) {
 		
-		if(!this.findCard(newCard)) {
+		if(!cards.contains(newCard)) {
 			cards.addFirst(newCard);
 		}
 		throw new CreditCardException("Credit Card already exists.");
 	}
 
-	public void removeCard(CreditCard card) {
+	public void removeCard(String ccNum) {
 
-		if(this.findCard(card)) {
-			cards.remove(card);
+		CreditCard c = this.findCard(ccNum);
+		cards.remove(c);
+
+	}
+
+	public CreditCard findCard(String ccNum) {
+
+		for(CreditCard c:cards) {
+			if(c.getCreditCardID().equals(ccNum)) {
+				return c;
+			}
 		}
 		throw new CreditCardException("Credit Card does not exist.");
 
 	}
 
-	public boolean findCard(CreditCard card) {
-
-		for(CreditCard c:cards) {
-			if(card.equals(c)) {
-				return true;
-			}
-		}
-		return false;
-
-	}
-
-	public void addPurchase(CreditCard card, PurchaseType type, double purchaseAmount) {
+	public void addPurchase(CreditCard card, Purchase purchase) {
 
 		
 		if(cards.contains(card)) {
 			
-			card.addPurchase(new Purchase (type, purchaseAmount));
+			card.addPurchase(purchase);
 		}
 	}
 
-	public void addPayment(CreditCard card, PaymentType type, BankAccount bankAccount, double paymentAmount) {
+	public void addPayment(CreditCard card, Payment payment) {
 
 		if(cards.contains(card)) {
 			
-			card.addPayment(new Payment(type, bankAccount, paymentAmount));
+			card.addPayment(payment);
 		}
 	}
 
-	public void addFee(CreditCard card, FeeType type, double feeAmount) {
+	public void addFee(CreditCard card, Fee fee) {
 
 
 		if(cards.contains(card)) {
 			
-			card.addFee(new Fee(type, feeAmount));
+			card.addFee(fee);
 		}
 	}
 
