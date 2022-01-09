@@ -1,5 +1,6 @@
 package creditCardFiles;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -13,16 +14,6 @@ public class CreditCards implements Iterable<CreditCard>{
 
 		cards = new LinkedList<CreditCard>();
 		modCount = 0;
-	}
-
-	public void activeCards() {
-
-		for (CreditCard card : cards) {
-
-			if (card.getStatus() == CreditCardStatus.ACTIVE) {
-				System.out.println(card.toString());
-			}
-		}
 	}
 
 	public double totalBalance() {
@@ -53,7 +44,9 @@ public class CreditCards implements Iterable<CreditCard>{
 			cards.addFirst(newCard);
 			modCount++;
 		}
-		throw new CreditCardException("Credit Card already exists.");
+		else {
+			throw new CreditCardException("Credit Card already exists.");
+		}
 	}
 
 	public void removeCard(String ccNum) {
@@ -100,10 +93,68 @@ public class CreditCards implements Iterable<CreditCard>{
 			card.addFee(fee);
 		}
 	}
+	
+	public CreditCard getFirst() {
+		return cards.getFirst();
+	}
 
 	@Override
 	public Iterator<CreditCard> iterator() {
 		return cards.iterator();
+	}
+	
+	public Iterator<CreditCard> activeCards() {
+		return new ActiveCardsIterator();
+	}
+	
+	class ActiveCardsIterator implements Iterator<CreditCard> {
+		
+		private ArrayList<CreditCard> activeCards;
+		private int index;
+		
+		public ActiveCardsIterator() {
+			activeCards = new ArrayList<CreditCard>();
+			Iterator<CreditCard> iter = cards.iterator();
+			while(iter.hasNext()) {
+				CreditCard c = iter.next();
+				if(c.getStatus().equals(CreditCardStatus.ACTIVE)) {
+					activeCards.add(c);
+				}
+			}
+			
+			if (activeCards.size() > 0) {
+     		   index = 0;
+     	   }
+     	   else {
+     		   index = -1;
+     	   }
+
+		}
+		
+		@Override
+		public boolean hasNext() {
+			if (index >= 0  && index < activeCards.size()) {
+				return true;
+			}
+			return false;
+
+		}
+
+		@Override
+		public CreditCard next() {
+			if(hasNext()) {
+				CreditCard currCard = activeCards.get(index);
+				index++;
+				return currCard;	
+			}
+			return null;
+			
+		}
+		
+	}
+	
+	public boolean isEmpty() {
+		return cards.isEmpty();
 	}
 
 }

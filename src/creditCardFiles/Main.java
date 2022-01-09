@@ -1,12 +1,25 @@
 package creditCardFiles;
 
-import java.util.Stack;
+import java.util.Scanner;
 
 public class Main {
 
 	public static void main(String[] args) {
 		
-		CreditCardApp ccTest = new CreditCardApp("Shani");
+		Scanner input = new Scanner(System.in);
+		String name;
+		System.out.print("Hello. What is your name? ");
+		name = input.nextLine();
+		
+		try {
+			
+			CreditCardApp ourApp = new CreditCardApp(name);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		
 		
 	}
 

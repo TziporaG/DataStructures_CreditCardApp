@@ -13,7 +13,12 @@ public class Address {
 		this.street = street;
 		this.city = city;
 		this.usState = usState;
+		
+		if(zipCode.length() < 5) {
+			throw new RuntimeException("Invalid Zip");
+		}
 		this.zipCode = zipCode;
+		
 	}
 
 	public Address(Address address) {

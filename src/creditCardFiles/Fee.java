@@ -1,13 +1,14 @@
 package creditCardFiles;
 
+import java.time.LocalDate;
 
 public class Fee extends Transaction {
 	
 	private FeeType feeType;
 	
-	public Fee (FeeType feeType, double amount) {
+	public Fee (FeeType feeType, double amount, LocalDate date) {
 		
-		super(TransactionType.FEE, amount);
+		super(TransactionType.FEE, amount, date);
 		this.feeType = feeType;
 	}
 

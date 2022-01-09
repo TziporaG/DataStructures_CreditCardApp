@@ -1,21 +1,20 @@
 package creditCardFiles;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Stack;
+
 import java.util.Random;
 
 public class CreditCard {
 
 	private String creditCardID;
-	private Random numGenerator = new Random();
-
-	static Set<String> usedCreditCardIds = new HashSet<String>();
-
 	private LocalDate issueDate;
 	private LocalDate expirationDate;
 	private String issueCompany;
@@ -24,40 +23,37 @@ public class CreditCard {
 	private double creditCardLimit;
 	private double currentBalance;
 	private double availCredit;
-	private Stack<Transaction> transactions;
+	private ArrayList<Transaction> transactions;
 
-	public CreditCard(String issueCompany, CreditCardType creditCardType, CreditCardStatus status) {
+	public CreditCard(String creditCardID, LocalDate issueDate, LocalDate expirationDate, String issueCompany,
+			CreditCardType creditCardType, double creditCardLimit) {
 
-		do {
-			this.creditCardID = String.valueOf(numGenerator.nextInt(9000) + 1000) + " "
-					+ String.valueOf(numGenerator.nextInt(9000) + 1000) + " "
-					+ String.valueOf(numGenerator.nextInt(9000) + 1000) + " "
-					+ String.valueOf(numGenerator.nextInt(9000) + 1000);
+		this.creditCardID = creditCardID;
+
+		this.issueDate = issueDate;
+
+		if (expirationDate.isBefore(issueDate)) {
+			throw new CreditCardException("Invalid Expiration Date.");
 		}
 
-		while (this.usedCreditCardIds.contains(creditCardID));
-		usedCreditCardIds.add(creditCardID);
-
-		this.issueDate = LocalDate.of(issueDate.getYear(), issueDate.getMonth(), issueDate.getDayOfMonth());
-
-		this.expirationDate = LocalDate.of(issueDate.getYear() + 3, issueDate.getMonth(), issueDate.getDayOfMonth());
+		this.expirationDate = expirationDate;
 
 		this.issueCompany = issueCompany;
 
 		this.creditCardType = creditCardType;
 
-		this.status = status;
+		// all cards start off active- why would someone put in card thats not active
+		this.status = CreditCardStatus.ACTIVE;
 
-		this.creditCardLimit = 100000;
+		this.creditCardLimit = creditCardLimit;
 
 		this.currentBalance = 0;
 
 		this.availCredit = creditCardLimit;
 
-		this.transactions = new Stack<Transaction>();
+		this.transactions = new ArrayList<Transaction>();
 
 	}
-	
 
 	public void addPurchase(Purchase purchase) {
 
@@ -71,7 +67,7 @@ public class CreditCard {
 				throw new IllegalTransactionException("Purchase amount exceeds credit limit");
 			}
 
-			transactions.push(purchase);
+			transactions.add(purchase);
 
 		}
 
@@ -88,10 +84,11 @@ public class CreditCard {
 			currentBalance -= payment.getAmount();
 			availCredit += payment.getAmount();
 
-			transactions.push(payment);
-		}
+			transactions.add(payment);
+		} else {
 
-		throw new DuplicateTransactionException("Payment is already recorded");
+			throw new DuplicateTransactionException("Payment is already recorded");
+		}
 
 	}
 
@@ -104,10 +101,11 @@ public class CreditCard {
 			currentBalance += fee.getAmount();
 			availCredit -= fee.getAmount();
 
-			transactions.push(fee);
-		}
+			transactions.add(fee);
+		} else {
 
-		throw new DuplicateTransactionException("Fee is already recorded");
+			throw new DuplicateTransactionException("Fee is already recorded");
+		}
 
 	}
 
@@ -124,7 +122,7 @@ public class CreditCard {
 	public Purchase getLargestPurchase() {
 
 		if (!transactions.isEmpty()) {
-			PriorityQueue<Purchase> purchases = new PriorityQueue<Purchase>(Collections.reverseOrder());
+			PriorityQueue<Purchase> purchases = new PriorityQueue<Purchase>(new PurchaseAmountComparator());
 			for (Transaction t : transactions) {
 
 				if (t.getClass() == Purchase.class) {
@@ -157,48 +155,42 @@ public class CreditCard {
 		return totalFees;
 	}
 
-	// maybe reorganize this method
 	public Purchase getMostRecentPurchase() {
+		
+		Iterator<Purchase> pIterator = purchaseIterator();
+		Purchase mostRecentPurchase = null;
+		Purchase currPurchase;
 
-		if (!transactions.isEmpty()) {
-			Stack<Transaction> copyStack = new Stack<Transaction>();
-			copyStack.addAll(transactions);
-
-			while (copyStack.peek().getClass() != Purchase.class) {
-
-				copyStack.pop();
-
-				if (copyStack.isEmpty()) {
-
-					return null;
-				}
-			}
-			return (Purchase) copyStack.peek();
+		
+		if(pIterator.hasNext()) {
+			mostRecentPurchase = pIterator.next();
 		}
-
-		return null;
+		while(pIterator.hasNext()) {
+			currPurchase = pIterator.next();
+			if(currPurchase.getTransactionDate().isAfter(mostRecentPurchase.getTransactionDate())) {
+				mostRecentPurchase = currPurchase;
+			}
+		}
+		return mostRecentPurchase;
 	}
 
-	// fill in correct return
 	public Payment getMostRecentPayment() {
 
-		if (!transactions.isEmpty()) {
-			Stack<Transaction> copyStack = new Stack<Transaction>();
-			copyStack.addAll(transactions);
+		Iterator<Payment> pIterator = paymentIterator();
+		Payment mostRecentPayment = null;
+		Payment currPayment;
 
-			while (copyStack.peek().getClass() != Payment.class) {
-
-				copyStack.pop();
-
-				if (copyStack.isEmpty()) {
-
-					return null;
-				}
-			}
-			return (Payment) copyStack.peek();
+		
+		if(pIterator.hasNext()) {
+			mostRecentPayment = pIterator.next();
 		}
-
-		return null;
+		while(pIterator.hasNext()) {
+			currPayment = pIterator.next();
+			if(currPayment.getTransactionDate().isAfter(mostRecentPayment.getTransactionDate())) {
+				mostRecentPayment = currPayment;
+			}
+		}
+		return mostRecentPayment;
 	}
 
 	public CreditCardStatus getStatus() {
@@ -233,8 +225,10 @@ public class CreditCard {
 		return creditCardLimit;
 	}
 
-	public Stack<Transaction> getTransactions() {
-		return transactions;
+	public ArrayList<Transaction> getTransactions() {
+		ArrayList<Transaction> copy = new ArrayList<Transaction>();
+		copy.addAll(transactions);
+		return copy;
 	}
 
 	@Override
@@ -249,5 +243,104 @@ public class CreditCard {
 		return Objects.equals(creditCardID, other.creditCardID);
 	}
 
-	
+	public Iterator<Purchase> purchaseIterator() {
+		return new PurchaseIterator();
+	}
+
+	public Iterator<Payment> paymentIterator() {
+		return new PaymentIterator();
+	}
+
+	class PurchaseIterator implements Iterator<Purchase> {
+
+		private ArrayList<Purchase> purchases;
+		// private int expectedModCount;
+		private int index;
+
+		public PurchaseIterator() {
+			purchases = new ArrayList<Purchase>();
+			Iterator<Transaction> iter = transactions.iterator();
+			while (iter.hasNext()) {
+				Transaction p = iter.next();
+				if (p.getClass().equals(Purchase.class)) {
+					purchases.add((Purchase) p);
+				}
+			}
+
+			if (purchases.size() > 0) {
+				index = 0;
+			} else {
+				index = -1;
+			}
+
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (index >= 0 && index < purchases.size()) {
+				return true;
+			}
+			return false;
+
+		}
+
+		@Override
+		public Purchase next() {
+			if (hasNext()) {
+				Purchase currPurchase = purchases.get(index);
+				index++;
+				return currPurchase;
+			}
+			return null;
+
+		}
+
+	}
+
+	class PaymentIterator implements Iterator<Payment> {
+
+		private ArrayList<Payment> payment;
+		// private int expectedModCount;
+		private int index;
+
+		public PaymentIterator() {
+			payment = new ArrayList<Payment>();
+			Iterator<Transaction> iter = transactions.iterator();
+			while (iter.hasNext()) {
+				Transaction p = iter.next();
+				if (p.getClass().equals(Payment.class)) {
+					payment.add((Payment) p);
+				}
+			}
+
+			if (payment.size() > 0) {
+				index = 0;
+			} else {
+				index = -1;
+			}
+
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (index >= 0 && index < payment.size()) {
+				return true;
+			}
+			return false;
+
+		}
+
+		@Override
+		public Payment next() {
+			if (hasNext()) {
+				Payment currPayment = payment.get(index);
+				index++;
+				return currPayment;
+			}
+			return null;
+
+		}
+
+	}
+
 }
