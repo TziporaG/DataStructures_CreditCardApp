@@ -44,7 +44,9 @@ public class CreditCards implements Iterable<CreditCard>{
 			cards.addFirst(newCard);
 			modCount++;
 		}
-		throw new CreditCardException("Credit Card already exists.");
+		else {
+			throw new CreditCardException("Credit Card already exists.");
+		}
 	}
 
 	public void removeCard(String ccNum) {
@@ -149,6 +151,10 @@ public class CreditCards implements Iterable<CreditCard>{
 			
 		}
 		
+	}
+	
+	public boolean isEmpty() {
+		return cards.isEmpty();
 	}
 
 }

@@ -13,14 +13,20 @@ public class Transaction {
 	
 	private double amount;
 	
-	public Transaction(TransactionType type, double amount) {
+	public Transaction(TransactionType type, double amount, LocalDate date) {
 		
 		if (lastTransactionID ==0) {
 			throw new IllegalTransactionException("Exceeded maximum transaction amount");
 		}
 		
 		transactionID = lastTransactionID--;
-		transactionDate = LocalDate.of(transactionDate.getYear(), transactionDate.getMonth(), transactionDate.getDayOfMonth());
+		
+		if(date.isAfter(LocalDate.now())) {
+			throw new IllegalTransactionException("Transaction date cannot be in the future.");
+		}
+		
+		this.transactionDate = date;
+		
 		this.transactionType = type;
 		
 		if(amount < 0) {

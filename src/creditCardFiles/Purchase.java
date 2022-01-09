@@ -1,13 +1,17 @@
 package creditCardFiles;
 
+import java.time.LocalDate;
+
 public class Purchase extends Transaction
 {
-	PurchaseType purchaseType;
+	private PurchaseType purchaseType;
+	private Vendor vendor;
 	
-	public Purchase(PurchaseType purchaseType, double amount) {
+	public Purchase(PurchaseType purchaseType, double amount, LocalDate date, Vendor vendor) {
 		
-		super(TransactionType.PURCHASE, amount);
+		super(TransactionType.PURCHASE, amount, date);
 		this.purchaseType = purchaseType;
+		this.vendor = vendor;
 	}
 
 	public PurchaseType getPurchaseType() {
@@ -18,7 +22,9 @@ public class Purchase extends Transaction
 	@Override
 	public String toString() {
 		
-		return super.toString() + "\nPurchase type: " + purchaseType;
+		return super.toString() 
+				+ "\nVendor:" + vendor.toString() 
+				+"\nPurchase type: " + purchaseType;
 	}
 	
 
