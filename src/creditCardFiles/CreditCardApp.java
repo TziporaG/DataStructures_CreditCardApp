@@ -248,12 +248,12 @@ public class CreditCardApp {
 		} else {
 			PriorityQueue<Purchase> purchases = new PriorityQueue<Purchase>(new PurchaseAmountComparator());
 			for (CreditCard card : cards) {
-				Purchase mostRecent = card.getLargestPurchase();
-				if(mostRecent == null) {
+				Purchase largestPurchase = card.getLargestPurchase();
+				if(largestPurchase == null) {
 					continue;
 				}
 				else {
-					purchases.offer(mostRecent);
+					purchases.offer(largestPurchase);
 				}
 			}
 			if(purchases.isEmpty()) {
