@@ -246,6 +246,7 @@ public class CreditCardApp {
 			System.out.println("You have no purchases.");
 			
 		} else {
+			//sorting purchases by amount 
 			PriorityQueue<Purchase> purchases = new PriorityQueue<Purchase>(new PurchaseAmountComparator());
 			for (CreditCard card : cards) {
 				Purchase largestPurchase = card.getLargestPurchase();
@@ -277,6 +278,7 @@ public class CreditCardApp {
 			System.out.println("You have no payments.");
 			
 		} else {
+			//sorting payments by date
 			PriorityQueue<Payment> payments = new PriorityQueue<Payment>(new PaymentDateComparator());
 			
 			for (CreditCard card : cards) {
@@ -312,6 +314,7 @@ public class CreditCardApp {
 					"Enter the Category you would like to see (Car, Clothing, Food, Groceries, Lodging, Restaurant, Travel, Utilities, Misc): ");
 			String category = input.nextLine().toUpperCase();
 
+			//validate valid enum
 			while (!category.equals("CAR") && !category.equals("CLOTHING") && !category.equals("FOOD")
 					&& !category.equals("GROCERIES") && !category.equals("LODGING") && !category.equals("RESTAURANT")
 					&& !category.equals("TRAVEL") && !category.equals("UTILITES") && !category.equals("MISC")) {
@@ -343,6 +346,7 @@ public class CreditCardApp {
 		if (cards.isEmpty()) {
 			System.out.println("You have no purchases.");
 		} else {
+			//creating a hashmap to hold the type with the amount spent on it
 			HashMap<PurchaseType, Double> purchaseAmounts = new HashMap<PurchaseType, Double>();
 			purchaseAmounts.put(PurchaseType.CAR, 0.0);
 			purchaseAmounts.put(PurchaseType.CLOTHING, 0.0);
@@ -362,7 +366,8 @@ public class CreditCardApp {
 					purchaseAmounts.put(p.getPurchaseType(), purchaseAmounts.get(p.getPurchaseType()) + p.getAmount());
 				}
 			}
-
+			
+			//getting the purchase based on the amount
 			Double maxValue = Collections.max(purchaseAmounts.values());
 			if (maxValue == 0) {
 				System.out.println("You have no purchases.");
