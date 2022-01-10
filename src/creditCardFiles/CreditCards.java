@@ -8,22 +8,20 @@ public class CreditCards implements Iterable<CreditCard>{
 
 	// using linked list so most efficient to remove from middle
 	private LinkedList<CreditCard> cards;
-	private int modCount;
+
 
 	public CreditCards() {
 
 		cards = new LinkedList<CreditCard>();
-		modCount = 0;
 	}
 
 	public double totalBalance() {
-
+		// assuming that the user would want to see all their outstanding balances not
+		// just active cards- ex. if lost
 		double totalBalance = 0;
-		
-		for (CreditCard card : cards) {
 
-				totalBalance += card.getCurrentBalance();
-			
+		for (CreditCard card : cards) {
+			totalBalance += card.getCurrentBalance();
 		}
 
 		return totalBalance;
@@ -32,7 +30,11 @@ public class CreditCards implements Iterable<CreditCard>{
 	public double totalAvailCredit() {
 
 		double totalAvailCredit = 0;
-		// iterate and add to totalAvailCredit
+		Iterator<CreditCard> activeCards = this.activeCards();
+
+		while (activeCards.hasNext()) {
+			totalAvailCredit += activeCards.next().getAvailCredit();
+		}
 
 		return totalAvailCredit;
 
@@ -42,7 +44,6 @@ public class CreditCards implements Iterable<CreditCard>{
 		
 		if(!cards.contains(newCard)) {
 			cards.addFirst(newCard);
-			modCount++;
 		}
 		else {
 			throw new CreditCardException("Credit Card already exists.");
@@ -53,7 +54,6 @@ public class CreditCards implements Iterable<CreditCard>{
 
 		CreditCard c = this.findCard(ccNum);
 		cards.remove(c);
-		modCount++;
 
 	}
 
@@ -70,7 +70,6 @@ public class CreditCards implements Iterable<CreditCard>{
 
 	public void addPurchase(CreditCard card, Purchase purchase) {
 
-		
 		if(cards.contains(card)) {
 			
 			card.addPurchase(purchase);
@@ -97,7 +96,11 @@ public class CreditCards implements Iterable<CreditCard>{
 	public CreditCard getFirst() {
 		return cards.getFirst();
 	}
-
+	
+	public boolean isEmpty() {
+		return cards.isEmpty();
+	}
+	
 	@Override
 	public Iterator<CreditCard> iterator() {
 		return cards.iterator();
@@ -117,6 +120,8 @@ public class CreditCards implements Iterable<CreditCard>{
 			Iterator<CreditCard> iter = cards.iterator();
 			while(iter.hasNext()) {
 				CreditCard c = iter.next();
+				
+				//add active cards to the ArrayList
 				if(c.getStatus().equals(CreditCardStatus.ACTIVE)) {
 					activeCards.add(c);
 				}
@@ -152,9 +157,6 @@ public class CreditCards implements Iterable<CreditCard>{
 		}
 		
 	}
-	
-	public boolean isEmpty() {
-		return cards.isEmpty();
-	}
+
 
 }

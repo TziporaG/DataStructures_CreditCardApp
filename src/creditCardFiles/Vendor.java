@@ -12,6 +12,7 @@ public class Vendor {
 		this.address = address;
 	}
 	
+	//allow a vendor without an address
 	public Vendor(String name) {
 		this.name = name;
 		this.address = null;
@@ -33,7 +34,6 @@ public class Vendor {
 		this.address = address;
 	}
 
-	//what should the toString print?
 	@Override
 	public String toString() {
 		if(address == null) {

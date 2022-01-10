@@ -58,7 +58,10 @@ public class Address {
 	}
 
 	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
+		
+		if(zipCode.length() >= 5) {
+			this.zipCode = zipCode;
+		}
 	}
 
 	@Override

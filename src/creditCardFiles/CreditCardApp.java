@@ -16,7 +16,6 @@ import java.util.PriorityQueue;
 public class CreditCardApp {
 
 	private String ownerName;
-	// can add in address
 	private CreditCards cards;
 	private Scanner input;
 
@@ -218,16 +217,9 @@ public class CreditCardApp {
 	}
 
 	public void displayOutstandingBalance() {
-		// assuming that the user would want to see all their outstanding balances not
-		// just active cards- ex. if lost
-		double totalBalance = 0;
-
-		for (CreditCard card : cards) {
-			totalBalance += card.getCurrentBalance();
-		}
-
-		System.out.println();
-
+		
+		double totalBalance = cards.totalBalance();
+		
 		if (totalBalance == 0) {
 			System.out.println("You have no outstanding balance.");
 		} else {
@@ -240,14 +232,8 @@ public class CreditCardApp {
 	}
 
 	public void displayTotalAvailCredit() {
-		double totalAvailCredit = 0;
-		Iterator<CreditCard> activeCards = cards.activeCards();
 
-		while (activeCards.hasNext()) {
-			totalAvailCredit += activeCards.next().getAvailCredit();
-		}
-
-		System.out.println("Total Available Credit: $" + totalAvailCredit);
+		System.out.println("Total Available Credit: $" + cards.totalAvailCredit());
 
 		System.out.println("Press enter to return to main menu");
 		input.nextLine();
@@ -261,7 +247,6 @@ public class CreditCardApp {
 			
 		} else {
 			PriorityQueue<Purchase> purchases = new PriorityQueue<Purchase>(new PurchaseAmountComparator());
-			
 			for (CreditCard card : cards) {
 				Purchase mostRecent = card.getLargestPurchase();
 				if(mostRecent == null) {
@@ -430,7 +415,7 @@ public class CreditCardApp {
 
 		try {
 
-			System.out.println("What would you like to do with the Credit Card?");
+			System.out.println("\nWhat would you like to do with the Credit Card?");
 			System.out.println("\t1. Display current balance\n" + "\t2. Display current credit limit\n"
 					+ "\t3. Add a Purchase\n" + "\t4. Add a Payment\n" + "\t5. Add a Fee\n"
 					+ "\t6. Display most recent Purchase\n" + "\t7. Display most recent Payment\n"
@@ -514,6 +499,7 @@ public class CreditCardApp {
 				"Enter Purchase Type (Car, Clothing, Food, Groceries, Lodging, Restaurant, Travel, Utilities, Misc): ");
 		String type = input.nextLine().toUpperCase();
 
+		//validate valid enum
 		while (!type.equals("CAR") && !type.equals("CLOTHING") && !type.equals("FOOD") && !type.equals("GROCERIES")
 				&& !type.equals("LODGING") && !type.equals("RESTAURANT") && !type.equals("TRAVEL")
 				&& !type.equals("UTILITES") && !type.equals("MISC")) {
@@ -525,6 +511,8 @@ public class CreditCardApp {
 
 		System.out.print("What was the date of the purchase (yyyy-mm-dd)? ");
 		LocalDate pDate = getDate();
+		
+		//date can not be in the future
 		while(pDate.isAfter(LocalDate.now())) {
 			System.out.println("Date cannot be after current date.");
 			System.out.print("Please re-enter: ");
@@ -533,6 +521,7 @@ public class CreditCardApp {
 
 		System.out.print("Enter Purchase Amount: ");
 		double amnt = input.nextDouble();
+		
 		while (amnt <= 0 || c.getAvailCredit() < amnt) {
 			System.out.println("Amount cannot be less than 0 or above available credit.");
 			System.out.print("Please re-enter: ");
@@ -568,6 +557,8 @@ public class CreditCardApp {
 		
 		System.out.print("Vendor State (Abbreviated Format): ");
 		state = input.nextLine().toUpperCase();
+		
+		//validate valid enum using isMember method
 		while(!USState.isMember(state)) {
 			System.out.println("Invalid State.");
 			System.out.print("Please enter vendor state: ");
@@ -617,6 +608,8 @@ public class CreditCardApp {
 
 		System.out.print("What was the date of the payment (yyyy-mm-dd)? ");
 		LocalDate pDate = getDate();
+		
+		//date can not be in the future
 		while(pDate.isAfter(LocalDate.now())) {
 			System.out.println("Date cannot be after current date.");
 			System.out.print("Please re-enter: ");
@@ -655,6 +648,8 @@ public class CreditCardApp {
 
 		System.out.print("When was the fee received (yyyy-mm-dd)? ");
 		LocalDate fDate = getDate();
+		
+		//date can not be in the future
 		while(fDate.isAfter(LocalDate.now())) {
 			System.out.println("Date cannot be after current date.");
 			System.out.print("Please re-enter: ");
@@ -725,12 +720,15 @@ public class CreditCardApp {
 			status = input.nextLine();
 		}
 
+		//only can change to expired if past current date
 		if (status.equals("EXPIRED")) {
 			if (c.getExpirationDate().compareTo(LocalDate.now()) > 0) {
 				System.out.println("Not expired.");
 				System.out.println("Returning to menu...");
 				manageSpecificCard(c);
 			}
+			
+		//only can change to active if before expiration date
 		} else if (status.equals("ACTIVE")) {
 			if (c.getExpirationDate().compareTo(LocalDate.now()) < 0) {
 				System.out.println("Not active.");
