@@ -258,7 +258,7 @@ public class CreditCardApp {
 				}
 			}
 			if(purchases.isEmpty()) {
-				System.out.println("You have no prucahses.");
+				System.out.println("You have no purchases.");
 			}
 			else {
 				System.out.println("Largest Purchase: " + purchases.peek());
@@ -511,7 +511,7 @@ public class CreditCardApp {
 
 			System.out.println("Invalid Type. ");
 			System.out.print("Please re-enter: ");
-			type = input.nextLine();
+			type = input.nextLine().toUpperCase();
 		}
 
 		System.out.print("What was the date of the purchase (yyyy-mm-dd)? ");

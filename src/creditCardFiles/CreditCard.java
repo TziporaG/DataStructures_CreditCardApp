@@ -2,15 +2,10 @@ package creditCardFiles;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.Stack;
-
-import java.util.Random;
 
 public class CreditCard {
 
@@ -24,6 +19,8 @@ public class CreditCard {
 	private double currentBalance;
 	private double availCredit;
 	private ArrayList<Transaction> transactions;
+	private int purchaseModCount;
+	private int paymentModCount;
 
 	public CreditCard(String creditCardID, LocalDate issueDate, LocalDate expirationDate, String issueCompany,
 			CreditCardType creditCardType, double creditCardLimit) {
@@ -52,22 +49,31 @@ public class CreditCard {
 		this.availCredit = creditCardLimit;
 
 		this.transactions = new ArrayList<Transaction>();
-
+		
+		this.purchaseModCount = 0;;
+		
+		this.paymentModCount = 0;
+		
 	}
 
 	public void addPurchase(Purchase purchase) {
 
 		if (!transactions.contains(purchase)) {
 
-			if (currentBalance + purchase.getAmount() < creditCardLimit) {
+			if (currentBalance + purchase.getAmount() <= creditCardLimit) {
 
 				currentBalance += purchase.getAmount();
 				availCredit -= purchase.getAmount();
+				
+				transactions.add(purchase);
+				
+				purchaseModCount++;
+				
 			} else {
 				throw new IllegalTransactionException("Purchase amount exceeds credit limit");
 			}
 
-			transactions.add(purchase);
+			
 
 		}
 
@@ -85,6 +91,8 @@ public class CreditCard {
 			availCredit += payment.getAmount();
 
 			transactions.add(payment);
+			
+			paymentModCount++;
 		} else {
 
 			throw new DuplicateTransactionException("Payment is already recorded");
@@ -254,8 +262,8 @@ public class CreditCard {
 	class PurchaseIterator implements Iterator<Purchase> {
 
 		private ArrayList<Purchase> purchases;
-		// private int expectedModCount;
 		private int index;
+		private int expectedPurchCount;
 
 		public PurchaseIterator() {
 			purchases = new ArrayList<Purchase>();
@@ -272,6 +280,8 @@ public class CreditCard {
 			} else {
 				index = -1;
 			}
+			
+			expectedPurchCount = purchaseModCount;
 
 		}
 
@@ -286,6 +296,9 @@ public class CreditCard {
 
 		@Override
 		public Purchase next() {
+			if(expectedPurchCount != purchaseModCount) {
+				throw new ConcurrentModificationException();
+			}
 			if (hasNext()) {
 				Purchase currPurchase = purchases.get(index);
 				index++;
@@ -300,7 +313,7 @@ public class CreditCard {
 	class PaymentIterator implements Iterator<Payment> {
 
 		private ArrayList<Payment> payment;
-		// private int expectedModCount;
+		private int expectedPayCount;
 		private int index;
 
 		public PaymentIterator() {
@@ -318,6 +331,8 @@ public class CreditCard {
 			} else {
 				index = -1;
 			}
+			
+			expectedPayCount = paymentModCount;
 
 		}
 
@@ -332,6 +347,9 @@ public class CreditCard {
 
 		@Override
 		public Payment next() {
+			if(expectedPayCount != paymentModCount) {
+				throw new ConcurrentModificationException();
+			}
 			if (hasNext()) {
 				Payment currPayment = payment.get(index);
 				index++;
