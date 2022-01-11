@@ -177,16 +177,19 @@ public class CreditCardApp {
 
 	public LocalDate getDate() {
 		String date;
+		
+		//set date to current date if something goes wrong and can't reset to inputed date
+		LocalDate localDate = LocalDate.now();
 		date = input.nextLine();
 		try {
-			return LocalDate.parse(date,
+			localDate = LocalDate.parse(date,
 					DateTimeFormatter.ofPattern("uuuu-M-d").withResolverStyle(ResolverStyle.STRICT));
 		} catch (DateTimeParseException e) {
 			System.out.println(e.getMessage());
 			System.out.print("Please re-enter: ");
 			getDate();
 		}
-		return null;
+		return localDate;
 	}
 
 	public void removeCreditCard() {
@@ -205,11 +208,12 @@ public class CreditCardApp {
 
 			try {
 				cards.removeCard(ccNum);
+				System.out.println("Card Removed.");
 			} catch (CreditCardException e) {
 				System.out.println(e.getMessage());
 			}
 		}
-
+		
 		System.out.println("Press enter to return to main menu");
 		input.nextLine();
 		displayMenu();
@@ -602,7 +606,7 @@ public class CreditCardApp {
 		while (!type.equals("CHECK") && !type.equals("ONLINE")) {
 			System.out.println("Invalid Type.");
 			System.out.print("Please re-enter: ");
-			type = input.nextLine();
+			type = input.nextLine().toUpperCase();
 		}
 
 		System.out.print("Enter Bank Name: ");
@@ -648,7 +652,7 @@ public class CreditCardApp {
 		while (!type.equals("LATEPAYMENT") && !type.equals("INTEREST")) {
 			System.out.println("Invalid Type.");
 			System.out.print("Please re-enter: ");
-			type = input.nextLine();
+			type = input.nextLine().toUpperCase();
 		}
 
 		System.out.print("When was the fee received (yyyy-mm-dd)? ");
